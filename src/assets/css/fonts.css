@@ -1,0 +1,22 @@
+/* assets/css/fonts.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+html, body {
+  font-family: 'Poppins', sans-serif; /* Apply Poppins font globally */
+  margin: 0; /* Reset default margin */
+  padding: 0; /* Reset default padding */
+  background-color: #f9f9f9; /* Optional: Set a light background color */
+  color: #333; /* Optional: Set a default text color */
+}
+
+table {
+    font-family: 'Poppins', sans-serif; /* Ensures the table uses Poppins font */
+    width: 100%; /* Optional: Set table width */
+    border-collapse: collapse; /* Optional: Collapse borders */
+  }
+  
+  td, th {
+    font-family: 'Poppins', sans-serif; /* Ensure each cell uses Poppins font */
+    padding: 10px; /* Optional: Add padding */
+    border: 1px solid #ddd; /* Optional: Add borders */
+  }
