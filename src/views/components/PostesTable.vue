@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     initializeDataTable() {
-      const apiUrl = "https://taxefy.ggsdrc.com/index.php/api/getdatafilter";
+      const apiUrl = "https://ultima.ultimardc.com/index.php/api/getdatafilter";
       
       // Destroy any existing DataTable instance
       if ($.fn.DataTable.isDataTable('#verbalisationTable')) {
@@ -124,7 +124,32 @@ export default {
         ],
         dom: 'Bfrtip',
         buttons: [
-          'copy', 'csv', 'excel', 'pdf', 'print'
+          'copy', 'csv', {
+            extend: 'excelHtml5',
+            title: 'Tableau signaletique taxation',
+            footer: true,
+            customize: (xlsx) => {
+              const sheet = xlsx.xl.worksheets['sheet1.xml'];
+              // Append total row for Excel export
+              $('row:last', sheet).after(`
+                <row>
+                  
+                </row>`);
+            }
+          },
+          {
+            extend: 'pdfHtml5',
+            title: 'Verbalisation Table',
+            footer: true,
+            customize: (doc) => {
+              // Append total row for PDF export
+              doc.content.push({
+                text: `Total Verba Montant: ${this.totalVerbaMontant} FC`,
+                alignment: 'right',
+                margin: [0, 10, 0, 0],
+              });
+            }
+          }, 'print'
         ],
       });
 

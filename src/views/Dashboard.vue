@@ -190,7 +190,7 @@ canvas {
                     <div class="row align-items-center mb-2 d-flex">
                         <div class="col-8">
                             <h4 class="d-flex align-items-center mb-0">
-                              {{ formatNumber1(totalVerbaMontantjournalier) }} 
+                              {{ formatCurrency(totalVerbaMontantjournalier) }} 
                             </h4>
                         </div>
                        
@@ -206,29 +206,51 @@ canvas {
         <br />
         <div class="row">
           <div class="col-lg-6 mb-lg-0 mb-4">
-            <div class="card">
-              <div class="p-3 pb-0 card-header">
-                <div class="d-flex justify-content-between">
-                  <h6 class="mb-2">Top 5 de meilleurs Postes</h6>
-                </div>
-              </div>
-              <div class="table-responsive">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Poste</th>
-                      <th>Total Taxés en FC</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(seller, index) in topSellers" :key="index">
-                      <td>{{ seller.post_nom }}</td>
-                      <td><ArgonBadge>{{ seller.total_verba_montant }} Fc</ArgonBadge></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="row">
+              <div class="card l-bg-grey">
+                  <div class="card-statistic-3 p-4">
+                      <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                      <div class="mb-4">
+                          <h5 class="card-title mb-0">CUMUL DES VENTES</h5>
+                      </div>
+                      <div class="row align-items-center mb-2 d-flex">
+                          <div class="col-8">
+                              <h4 class="d-flex align-items-center mb-0">
+                                {{ formatCurrency(totalVerbaMontant) }} FC
+                              </h4>
+                          </div>
+                        
+                      </div>
+                      
+                  </div>
               </div>
             </div>
+            <div class="row">
+              <div class="card">
+                <div class="p-3 pb-0 card-header">
+                  <div class="d-flex justify-content-between">
+                    <h6 class="mb-2">Top 5 de meilleurs Postes</h6>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Poste</th>
+                        <th>Total Taxés en FC</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(seller, index) in topSellers" :key="index">
+                        <td>{{ seller.post_nom }}</td>
+                        <td><ArgonBadge>{{ seller.total_verba_montant }} Fc</ArgonBadge></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
           </div>
           <div class="col-lg-6 mb-lg-0 mb-4">
             <div class="card">
@@ -261,6 +283,7 @@ export default {
       totalBuses: 0,
       totaltaxi: 0,
       totalVerbaMontant: 0, // Add this line to store the total verba montant
+      cumulVerbaMontant: 0, // Add this line to store the cumul verba montant
       totalMotosjournalier: 0,
       totalBusesjournalier: 0,
       totaltaxijournalier: 0,
@@ -288,14 +311,14 @@ export default {
   methods: {
     async fetchTopSellers() {
       try {
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/classement_ventes');
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/classement_ventes');
         this.topSellers = response.data;
       } catch (error) {
         console.error('Error fetching top sellers:', error);
       }
     },
     fetchTotalMotos() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_moto')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_moto')
         .then(response => response.json())
         .then(data => {
           console.log('Moto Data received:', data);
@@ -306,7 +329,7 @@ export default {
         });
     },
     fetchTotalMotosjournalier() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_moto_journalier')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_moto_journalier')
         .then(response => response.json())
         .then(data => {
           console.log('Moto Data received:', data);
@@ -318,7 +341,7 @@ export default {
     },
    
     fetchTotalBuses() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_bus')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_bus')
         .then(response => response.json())
         .then(data => {
           console.log('Bus Data received:', data);
@@ -329,7 +352,7 @@ export default {
         });
     },
     fetchTotalBusesjournalier() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_bus_journalier')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_bus_journalier')
         .then(response => response.json())
         .then(data => {
           console.log('Bus Data received:', data);
@@ -341,7 +364,7 @@ export default {
     },
     
     fetchTotalTaxi() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_taxi')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_taxi')
         .then(response => response.json())
         .then(data => {
           console.log('Taxi Data received:', data);
@@ -352,7 +375,7 @@ export default {
         });
     },
     fetchTotalTaxijournalier() {
-      fetch('https://taxefy.ggsdrc.com/index.php/api/count_taxi_journalier')
+      fetch('https://ultima.ultimardc.com/index.php/api/count_taxi_journalier')
         .then(response => response.json())
         .then(data => {
           console.log('Taxi Data received:', data);
@@ -364,7 +387,7 @@ export default {
     },
 
     fetchTotalVerbaMontant() { // New method to fetch total verba montant
-      fetch('https://taxefy.ggsdrc.com/index.php/api/total_verba_montant') // Adjust the URL based on your CodeIgniter setup
+      fetch('https://ultima.ultimardc.com/index.php/api/total_verba_montant') // Adjust the URL based on your CodeIgniter setup
         .then(response => response.json())
         .then(data => {
           console.log('Total Verba Montant received:', data);
@@ -379,7 +402,7 @@ export default {
     },
 
     fetchTotalVerbaMontantjournalier() { // New method to fetch total verba montant
-      fetch('https://taxefy.ggsdrc.com/index.php/api/total_verba_montant_journalier') // Adjust the URL based on your CodeIgniter setup
+      fetch('https://ultima.ultimardc.com/index.php/api/total_verba_montant_journalier') // Adjust the URL based on your CodeIgniter setup
         .then(response => response.json())
         .then(data => {
           console.log('Total Verba Montant received:', data);
@@ -389,13 +412,20 @@ export default {
           console.error('Error fetching total verba montant:', error);
         });
     },
+    formatCurrency(value) {
+      // Check if the value is null or undefined
+      if (value == null) {
+        return '0 FC'; // or return an empty string or whatever default you prefer
+      }
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') ;
+    },
     formatNumber1(value) {
-      return value.toLocaleString('fr-FR') + ' FC'; // Adjust to your preferred locale
+      return value.toLocaleString('fr-FR') ; // Adjust to your preferred locale
     },
     async fetchVehicleCounts() {
       try {
         // Replace this URL with the actual API endpoint
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/piecharts');
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/getVehicleCounts');
         this.vehicleCounts = response.data;
         this.renderChart();
       } catch (error) {

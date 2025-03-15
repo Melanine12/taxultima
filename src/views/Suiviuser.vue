@@ -63,14 +63,14 @@
                                 <thead>
                                     <tr>
                                     <th>Matricule</th>
-                                    <th>Name</th>
+                                    <th>Poste</th>
                                     <th>Last Login Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="user in loggedInUsersToday" :key="user.user_id">
                                     <td>{{ user.matricule }}</td>
-                                    <td>{{ user.nom_agent_logged }}</td>
+                                    <td>{{ user.nom_agent }}</td>
                                     <td>{{ formatDate(user.last_login_time) }}</td>
                                     </tr>
                                 </tbody>
@@ -85,7 +85,25 @@
                     <div class="user-list-container">
                         <h3>LISTE POS NON CONNECTES</h3>
                        
+                        <div class="table-wrapper">
+                            <table id="NotloggedInUsersTable" class="display" style="width:100%">
+                                <thead>
+                                    <tr>
+                                    <th>Matricule</th>
+                                    <th>Poste</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in usersNotLoggedInToday" :key="user.user_id">
+                                    <td>{{ user.matricule }}</td>
+                                    <td>{{ user.nom_agent }}</td>
+                                    
+                                    </tr>
+                                </tbody>
+                            </table>
 
+                        </div>
                        
                     </div>
                 </div>
@@ -413,9 +431,7 @@ import axios from 'axios';
 //import Paginate from 'vuejs-paginate-next';
 
 export default {
-    components: {
     
-  },
   data() {
     return {
       totalLoggedInUsers: 0,
@@ -431,21 +447,10 @@ export default {
    
   },
   methods: {
-    async fetchTotalLoggedInUsers() {
-      try {
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/getactiveuser');
-        if (response.data.status) {
-          this.totalLoggedInUsers = response.data.total_logged_in_users;
-        } else {
-          console.error("Failed to fetch the total logged-in users.");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
+   
     async fetchTotalNotLoggedInUsers() {
       try {
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/getcountnotactiveuser');
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/getcountnotactiveuser');
         if (response.data.status) {
           this.totalNotLoggedInUsers = response.data.total_not_logged_in_today;
         } else {
@@ -457,9 +462,9 @@ export default {
     },
     async fetchUsersNotLoggedInToday() {
       try {
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/getnotactiveuser');
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/getnotactiveuser');
         if (response.data.status) {
-          this.usersNotLoggedInToday = response.data.users_not_logged_in_today;
+          //this.usersNotLoggedInToday = response.data.users_not_logged_in_today;
         } else {
           console.error("Failed to fetch the users who haven't logged in today.");
         }
@@ -467,9 +472,28 @@ export default {
         console.error("Error fetching data:", error);
       }
     },
+    async fetchUsersNotLog() {
+      try {
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/usernotloggintoday');
+        if (response.data.status) {
+          this.usersNotLoggedInToday = response.data.users_not_logged_in_today;
+          this.totalNotLoggedInUsers = this.usersNotLoggedInToday.length; // Update total count
+          console.log(response.data.users_not_logged_in_today);
+          
+          // Initialize DataTable after data is fetched
+          this.$nextTick(() => {
+            this.initializeDataTableNotloggin('#NotloggedInUsersTable');
+          });
+        } else {
+          console.error("Failed to fetch the logged-in users.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
     async fetchUsers() {
       try {
-        const response = await axios.get('https://taxefy.ggsdrc.com/index.php/api/listactiveuser');
+        const response = await axios.get('https://ultima.ultimardc.com/index.php/api/userloggintoday');
         if (response.data.status) {
           this.loggedInUsersToday = response.data.logged_in_users_today;
           this.totalLoggedInUsers = this.loggedInUsersToday.length; // Update total count
@@ -490,6 +514,15 @@ export default {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
       return new Date(date).toLocaleDateString(undefined, options);
     },
+    initializeDataTableNotloggin(tableId1) {
+      $(tableId1).DataTable({
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        lengthChange: true,
+      });
+    },
     initializeDataTable(tableId) {
       $(tableId).DataTable({
         paging: true,
@@ -501,10 +534,11 @@ export default {
     },
   },
   created() {
-    this.fetchTotalLoggedInUsers();
+    //this.fetchTotalLoggedInUsers();
     this.fetchTotalNotLoggedInUsers();
     this.fetchUsersNotLoggedInToday();
     this.fetchUsers();
+    this.fetchUsersNotLog();
   }
 };
 </script>

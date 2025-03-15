@@ -80,7 +80,7 @@ const getRoute = () => {
         <sidenav-item
           to="/profile"
           :class="getRoute() === 'profile' ? 'active' : ''"
-          :navText="isRTL ? 'حساب تعريفي' : 'Paramètres Systèmes'"
+          :navText="isRTL ? 'حساب تعريفي' : 'Report daily basis'"
         >
           <template v-slot:icon>
             <i class="ni ni-settings-gear-65 text-dark text-sm opacity-10"></i>
